@@ -22,6 +22,7 @@ function renderTaskList() {}
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event) {
+  event.preventDefault();
   const taskObj = {
     title: title.val(),
     deadline: deadline.val(),
@@ -48,5 +49,28 @@ function handleDrop(event, ui) {}
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
   $("#deadline").datepicker();
+
+  $(".task-card").draggable({ opacity: 0.5, scope: "drop" });
+
+  $("#todo-cards").droppable({ accept: ".task-card", scope: "drop" });
+  //   .droppable({
+  //     drop: function () {
+  //       alert("I am dropped");
+  //     },
+  //   });
+  //   $("#in-progress-cards").draggable();
+  $("#in-progress-cards").droppable({ accept: ".task-card", scope: "drop" });
+  //   .droppable({
+  //     drop: function () {
+  //       alert("I am dropped");
+  //     },
+  //   });
+  //   $("#done-cards").draggable();
+  $("#done-cards").droppable({ accept: ".task-card", scope: "drop" });
+  //   .droppable({
+  //     drop: function () {
+  //       alert("I am dropped");
+  //     },
+  //   });
   addTaskBtnEL.on("click", handleAddTask);
 });

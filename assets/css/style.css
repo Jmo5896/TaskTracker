@@ -14,3 +14,12 @@ body {
 .task-card:hover {
   cursor: grab;
 }
+
+.warning-card {
+  background-color: gold;
+}
+
+.overdue-card {
+  background-color: crimson;
+  color: antiquewhite;
+}
