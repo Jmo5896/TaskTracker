@@ -29,7 +29,14 @@ function handleAddTask(event) {
     state: 0,
     id: generateTaskId(),
   };
-  console.log("handleAddTask: ", taskObj);
+  if (taskObj.title && taskObj.deadline && taskObj.description) {
+    taskList.push(taskObj);
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+    title.val(null);
+    deadline.val(null);
+    description.val(null);
+  }
+  //   console.log("handleAddTask: ", taskObj);
 }
 
 // Todo: create a function to handle deleting a task
