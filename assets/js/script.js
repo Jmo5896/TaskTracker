@@ -52,7 +52,7 @@ function renderTaskList() {
   $("#todo-cards").empty();
   $("#in-progress-cards").empty();
   $("#done-cards").empty();
-  for (const task of taskList) {
+  for (const task of taskList.sort((a, b) => a.order - b.order)) {
     // console.log(task);
     $(task.column).append(createTaskCard(task));
   }
@@ -65,6 +65,9 @@ function handleAddTask(event) {
     title: title.val(),
     deadline: deadline.val(),
     description: description.val(),
+    order: taskList.length
+      ? taskList.filter((obj) => obj.column === "#todo-cards").length
+      : 0,
     column: "#todo-cards",
     // column: "#in-progress-cards",
     id: generateTaskId(),
@@ -92,19 +95,27 @@ function handleDeleteTask(event) {
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {
   console.log("handleDrop: ");
-  const newCol = `#${event.target.id}`;
-  const items = $(newCol).children();
-  for (const item of items) {
-    const id = $(item).find(".btn-remove").attr("id");
-    taskList = taskList.map((taskObj) => {
-      if (taskObj.id === id) {
-        return { ...taskObj, column: newCol };
-      }
-    });
-    console.log();
+  console.log(event.target);
+  console.log(taskList);
+  if (event.target) {
+    const newCol = `#${event.target.id}`;
+
+    const items = $(newCol).children();
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const id = $(item).find(".btn-remove").attr("id");
+      const taskIndex = taskList.findIndex((obj) => obj.id === id);
+      taskList[taskIndex] = {
+        ...taskList[taskIndex],
+        column: newCol,
+        order: i,
+      };
+      localStorage.setItem("tasks", JSON.stringify(taskList));
+      //   console.log();
+    }
   }
   //   console.log(items);
-  console.log(ui);
+  //   console.log(ui);
 }
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
