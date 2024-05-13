@@ -22,7 +22,7 @@ function createTaskCard({ title, deadline, description, id }) {
   const now = dayjs();
   const dDate = dayjs(deadline).diff(now) / 1000 / 60 / 60 / 24;
 
-  console.log(dDate);
+  //   console.log(dDate);
 
   if (dDate <= 1 && dDate >= 0) {
     status = "Deadline is Coming Up";
@@ -53,7 +53,7 @@ function renderTaskList() {
   $("#in-progress-cards").empty();
   $("#done-cards").empty();
   for (const task of taskList) {
-    console.log(task);
+    // console.log(task);
     $(task.column).append(createTaskCard(task));
   }
 }
@@ -90,18 +90,33 @@ function handleDeleteTask(event) {
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
-function handleDrop(event, ui) {}
+function handleDrop(event, ui) {
+  console.log("handleDrop: ");
+  const newCol = `#${event.target.id}`;
+  const items = $(newCol).children();
+  for (const item of items) {
+    const id = $(item).find(".btn-remove").attr("id");
+    taskList = taskList.map((taskObj) => {
+      if (taskObj.id === id) {
+        return { ...taskObj, column: newCol };
+      }
+    });
+    console.log();
+  }
+  //   console.log(items);
+  console.log(ui);
+}
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
   $("#deadline").datepicker();
 
-  $("#todo-cards, #in-progress-cards, #done-cards")
-    .sortable({
-      connectWith: ".column",
-      dropOnEmpty: false,
-    })
-    .disableSelection();
+  $("#todo-cards, #in-progress-cards, #done-cards").sortable({
+    connectWith: ".column",
+    dropOnEmpty: true,
+    update: handleDrop,
+  });
+  // .disableSelection();
 
   addTaskBtnEL.on("click", handleAddTask);
   columnsEL.on("click", ".btn-remove", handleDeleteTask);
