@@ -15,14 +15,21 @@ function generateTaskId() {
 }
 
 // Todo: create a function to create a task card
-function createTaskCard({ title, deadline, description, state, id }) {
+function createTaskCard({ title, deadline, description, id }) {
   // Task (change to "Task in Progress..." or "Task Completed!")
   let status = "PLACEHOLDER";
+  let state = "";
+  const now = dayjs();
+  const dDate = dayjs(deadline).diff(now) / 1000 / 60 / 60 / 24;
 
-  if (state === "warning-card") {
+  console.log(dDate);
+
+  if (dDate <= 1 && dDate >= 0) {
     status = "Deadline is Coming Up";
-  } else if (state === "overdue-card") {
+    state = "warning-card";
+  } else if (dDate < 0) {
     status = "Task is OverDue";
+    state = "overdue-card";
   } else {
     status = "Task";
   }
@@ -58,9 +65,8 @@ function handleAddTask(event) {
     title: title.val(),
     deadline: deadline.val(),
     description: description.val(),
-    state: "",
-    // column: "#todo-cards",
-    column: "#in-progress-cards",
+    column: "#todo-cards",
+    // column: "#in-progress-cards",
     id: generateTaskId(),
   };
   if (taskObj.title && taskObj.deadline && taskObj.description) {
@@ -96,31 +102,7 @@ $(document).ready(function () {
       dropOnEmpty: false,
     })
     .disableSelection();
-  //   $("#in-progress-cards").sortable();
-  //   $("#done-cards").sortable();
 
-  //   $(".task-card").draggable({ opacity: 0.5, scope: "drop" });
-
-  //   $("#todo-cards").droppable({ accept: ".task-card", scope: "drop" });
-  //   .droppable({
-  //     drop: function () {
-  //       alert("I am dropped");
-  //     },
-  //   });
-  //   $("#in-progress-cards").draggable();
-  //   $("#in-progress-cards").droppable({ accept: ".task-card", scope: "drop" });
-  //   .droppable({
-  //     drop: function () {
-  //       alert("I am dropped");
-  //     },
-  //   });
-  //   $("#done-cards").draggable();
-  //   $("#done-cards").droppable({ accept: ".task-card", scope: "drop" });
-  //   .droppable({
-  //     drop: function () {
-  //       alert("I am dropped");
-  //     },
-  //   });
   addTaskBtnEL.on("click", handleAddTask);
   columnsEL.on("click", ".btn-remove", handleDeleteTask);
   renderTaskList();
