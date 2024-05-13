@@ -59,7 +59,8 @@ function handleAddTask(event) {
     deadline: deadline.val(),
     description: description.val(),
     state: "",
-    column: "#todo-cards",
+    // column: "#todo-cards",
+    column: "#in-progress-cards",
     id: generateTaskId(),
   };
   if (taskObj.title && taskObj.deadline && taskObj.description) {
@@ -89,11 +90,14 @@ function handleDrop(event, ui) {}
 $(document).ready(function () {
   $("#deadline").datepicker();
 
-  $("#todo-cards").sortable({
-    connectWith: "#in-progress-cards",
-  });
-  $("#in-progress-cards").sortable();
-  $("#done-cards").sortable();
+  $("#todo-cards, #in-progress-cards, #done-cards")
+    .sortable({
+      connectWith: ".column",
+      dropOnEmpty: false,
+    })
+    .disableSelection();
+  //   $("#in-progress-cards").sortable();
+  //   $("#done-cards").sortable();
 
   //   $(".task-card").draggable({ opacity: 0.5, scope: "drop" });
 
