@@ -27,14 +27,14 @@ function createTaskCard({ title, deadline, description, state, id }) {
     status = "Task";
   }
   return `
-              <div id="${id}" class="card task-card ${state}">
+              <div class="card task-card ${state}">
                 <div class="card-header">
-                ${status} / ${deadline}
+                ${status} | Deadline: ${deadline}
                 </div>
                 <div class="card-body">
                   <h5 class="card-title">${title}</h5>
                   <p class="card-text">${description}</p>
-                  <button class="btn btn-danger">Remove Task</button>
+                  <button id="${id}" class="btn btn-danger btn-remove">Remove Task</button>
                 </div>
               </div>
 `;
@@ -46,6 +46,7 @@ function renderTaskList() {
   $("#in-progress-cards").empty();
   $("#done-cards").empty();
   for (const task of taskList) {
+    console.log(task);
     $(task.column).append(createTaskCard(task));
   }
 }
@@ -64,6 +65,7 @@ function handleAddTask(event) {
   if (taskObj.title && taskObj.deadline && taskObj.description) {
     taskList.push(taskObj);
     localStorage.setItem("tasks", JSON.stringify(taskList));
+    renderTaskList();
     title.val(null);
     deadline.val(null);
     description.val(null);
@@ -72,7 +74,13 @@ function handleAddTask(event) {
 }
 
 // Todo: create a function to handle deleting a task
-function handleDeleteTask(event) {}
+function handleDeleteTask(event) {
+  const taskId = event.target.id;
+  console.log(taskId);
+  taskList = taskList.filter((tasks) => tasks.id !== taskId);
+  localStorage.setItem("tasks", JSON.stringify(taskList));
+  renderTaskList();
+}
 
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {}
@@ -110,4 +118,6 @@ $(document).ready(function () {
   //     },
   //   });
   addTaskBtnEL.on("click", handleAddTask);
+  columnsEL.on("click", ".btn-remove", handleDeleteTask);
+  renderTaskList();
 });
